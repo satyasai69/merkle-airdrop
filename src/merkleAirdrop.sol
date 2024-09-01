@@ -55,4 +55,16 @@ contract MerkleAirdrop {
 
         i_airdropToken.safeTransfer(_account, _amount);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                           VIEW & PURE FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+    function getMarkleRoot() public view returns (bytes32) {
+        return i_markleRoot;
+    }
+
+    function getAirdropToken() public view returns (IERC20) {
+        return i_airdropToken;
+    }
 }
