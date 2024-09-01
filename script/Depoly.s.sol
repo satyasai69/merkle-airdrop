@@ -19,7 +19,6 @@ contract Depoly is Script {
         merkleAirdrop = new MerkleAirdrop(ROOT, bagelToken);
 
         bagelToken.mint(address(merkleAirdrop), MINT_AMOUNT);
-
         vm.stopBroadcast();
 
         return (bagelToken, merkleAirdrop);
