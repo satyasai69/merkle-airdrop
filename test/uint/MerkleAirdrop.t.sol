@@ -29,6 +29,8 @@ contract MarkleAirdropTest is Test, ZkSyncChainChecker {
     address USER2;
     uint256 userPrivateKey2;
 
+    address GASPAYER;
+
     function setUp() public {
         if (!isZkSyncChain()) {
             Depoly depolyer = new Depoly();
@@ -43,13 +45,17 @@ contract MarkleAirdropTest is Test, ZkSyncChainChecker {
 
         (USER, userPrivateKey) = makeAddrAndKey("USER");
         (USER2, userPrivateKey2) = makeAddrAndKey("USER2");
+        address GASPAYER = makeAddr("GASPAYER");
     }
 
     function testUserCanClaim() public {
         uint256 startingBalance = bagelToken.balanceOf(USER);
+        bytes32 digest = merkleAirdrop.getMessageHash(USER, AMOUNT);
 
-        vm.prank(USER);
-        merkleAirdrop.claim(address(USER), AMOUNT, PROOF);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, digest);
+
+        vm.prank(GASPAYER);
+        merkleAirdrop.claim(address(USER), AMOUNT, PROOF, v, r, s);
 
         uint256 endingBalance = bagelToken.balanceOf(USER);
 
@@ -60,11 +66,14 @@ contract MarkleAirdropTest is Test, ZkSyncChainChecker {
 
     function testUserNotonList() public {
         uint256 startingBalance = bagelToken.balanceOf(USER2);
+        bytes32 digest = merkleAirdrop.getMessageHash(USER2, AMOUNT);
 
-        vm.prank(USER2);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey2, digest);
+
+        vm.prank(GASPAYER);
 
         vm.expectRevert(MerkleAirdrop.MerkleAirdrop__InvaildProof.selector);
-        merkleAirdrop.claim(address(USER2), AMOUNT, PROOF);
+        merkleAirdrop.claim(address(USER2), AMOUNT, PROOF, v, r, s);
 
         uint256 endingBalance = bagelToken.balanceOf(USER2);
 
@@ -75,12 +84,15 @@ contract MarkleAirdropTest is Test, ZkSyncChainChecker {
 
     function testIfUserAlreadlyClaimItsRevert() public {
         uint256 startingBalance = bagelToken.balanceOf(USER);
+        bytes32 digest = merkleAirdrop.getMessageHash(USER, AMOUNT);
 
-        vm.startPrank(USER);
-        merkleAirdrop.claim(address(USER), AMOUNT, PROOF);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivateKey, digest);
+
+        vm.startPrank(GASPAYER);
+        merkleAirdrop.claim(address(USER), AMOUNT, PROOF, v, r, s);
 
         vm.expectRevert(MerkleAirdrop.MerkleAirdrop__AlreadyClaimed.selector);
-        merkleAirdrop.claim(address(USER), AMOUNT, PROOF);
+        merkleAirdrop.claim(address(USER), AMOUNT, PROOF, v, r, s);
 
         vm.stopPrank();
         uint256 endingBalance = bagelToken.balanceOf(USER);
