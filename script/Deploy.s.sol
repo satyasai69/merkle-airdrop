@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {BagelToken} from "src/BagelToken.sol";
 import {MerkleAirdrop} from "src/MerkleAirdrop.sol";
 
-contract Depoly is Script {
+contract Deploy is Script {
     BagelToken bagelToken;
     MerkleAirdrop merkleAirdrop;
 

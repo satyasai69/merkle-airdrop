@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.24;
 
 import {Test, console} from "forge-std/Test.sol";
 import {BagelToken} from "src/BagelToken.sol";
 import {MerkleAirdrop} from "src/MerkleAirdrop.sol";
-import {Depoly} from "script/Depoly.s.sol";
+import {Deploy} from "script/Deploy.s.sol";
 import {ZkSyncChainChecker} from "lib/foundry-devops/src/ZkSyncChainChecker.sol";
 
 contract MarkleAirdropTest is Test, ZkSyncChainChecker {
@@ -33,7 +33,7 @@ contract MarkleAirdropTest is Test, ZkSyncChainChecker {
 
     function setUp() public {
         if (!isZkSyncChain()) {
-            Depoly depolyer = new Depoly();
+            Deploy depolyer = new Deploy();
 
             (bagelToken, merkleAirdrop) = depolyer.run();
         } else {

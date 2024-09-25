@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.24;
 
 /**
  * @title MerkleAirdrop
@@ -19,6 +19,7 @@ contract MerkleAirdrop is EIP712 {
     error MerkleAirdrop__InvaildProof();
     error MerkleAirdrop__AlreadyClaimed();
     error MerkleAirdrop__InvalidSignature();
+    error MerkleAirdrop__ClaimAmount();
 
     /*//////////////////////////////////////////////////////////////
                             STORAGE VARIABLES
@@ -53,6 +54,10 @@ contract MerkleAirdrop is EIP712 {
     {
         if (s_airdropClaimed[_account]) {
             revert MerkleAirdrop__AlreadyClaimed();
+        }
+
+        if (_amount > 25 * 1e18) {
+            revert MerkleAirdrop__ClaimAmount();
         }
 
         if (!_isValidSignature(_account, getMessageHash(_account, _amount), v, r, s)) {
