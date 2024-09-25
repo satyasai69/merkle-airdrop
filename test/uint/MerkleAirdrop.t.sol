@@ -61,7 +61,7 @@ contract MarkleAirdropTest is Test, ZkSyncChainChecker {
 
         assertEq(AMOUNT, endingBalance - startingBalance);
 
-        console.log("EndingBalance :", endingBalance);
+        console.log("EndingBalances :", endingBalance);
     }
 
     function testUserNotonList() public {
